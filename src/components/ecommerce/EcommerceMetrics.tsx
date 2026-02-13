@@ -6,18 +6,34 @@ import { BoxIconLine, GroupIcon, PlugInIcon } from "@/icons";
 import { useAuth } from "@/context/AuthContext";
 
 type Metrics = {
-  totalRequests: number;
-  totalCompanies: number;
-  totalServices: number;
-  serviceRequests: { pending: number; approved: number };
-  requestsByStatus: { open: number; pending: number; closed: number };
+  requestsTotal: number;
+  companiesTotal: number;
+  servicesTotal: number;
+  serviceRequests: { open: number; pending: number; closed: number };
 };
 
 export const EcommerceMetrics = () => {
   const { token } = useAuth();
   const [metrics, setMetrics] = useState<Metrics | null>(null);
 
- 
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch("/api/admin/metrics", {
+          headers: { authorization: `Bearer ${token}` },
+        });
+        const json = await res.json();
+        if (!res.ok || !json.ok) throw new Error(json?.message || "Metrics error");
+        setMetrics(json.data.metrics);
+        console.log(json.data)
+      } catch (e) {
+        console.error("Metrics fetch error:", e);
+      }
+    };
+
+    fetchMetrics();
+  }, [token]);
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
@@ -30,7 +46,7 @@ export const EcommerceMetrics = () => {
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">Companies</span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {metrics ? metrics.totalCompanies : "—"}
+              {metrics ? metrics.companiesTotal : "—"}
             </h4>
           </div>
           <Badge color="success">Active</Badge>
@@ -45,10 +61,10 @@ export const EcommerceMetrics = () => {
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">Requests</span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {metrics ? metrics.totalRequests : "—"}
+              {metrics ? metrics.requestsTotal : "—"}
             </h4>
           </div>
-          <Badge color="warning">Pending {metrics ? metrics.requestsByStatus.pending : "—"}</Badge>
+          <Badge color="warning">Pending {metrics ? metrics.serviceRequests.pending : "—"}</Badge>
         </div>
       </div>
 
@@ -63,7 +79,7 @@ export const EcommerceMetrics = () => {
               {metrics ? metrics.serviceRequests.pending : "—"}
             </h4>
           </div>
-          <Badge color="success">Total services {metrics ? metrics.totalServices : "—"}</Badge>
+          <Badge color="success">Total services {metrics ? metrics.servicesTotal : "—"}</Badge>
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 
 type ServiceRequest = {
   _id: string;
-  title: string;
+  naziv: string;
   description?: string;
   email?: string;
   status?: "pending" | "approved" | "rejected";
@@ -40,7 +40,8 @@ export default function RequestServicesPage() {
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json?.message || "Ne mogu dohvatiti zahtjeve");
-      setItems(json.data.items || []);
+      setItems(json.data.data || []);
+      console.log(json.data)
     } catch (e: any) {
       setError(e.message || "Greška");
     } finally {
@@ -127,7 +128,7 @@ export default function RequestServicesPage() {
               items.map((it) => (
                 <TableRow key={it._id}>
                   <TableCell>
-                    <div className="font-medium text-gray-800 dark:text-white/90">{it.title}</div>
+                    <div className="font-medium text-gray-800 dark:text-white/90">{it.naziv}</div>
                     {it.description && (
                       <div className="text-xs text-gray-500 dark:text-gray-400">{it.description}</div>
                     )}
@@ -135,7 +136,7 @@ export default function RequestServicesPage() {
                   <TableCell>
                     <Badge color={statusColor(it.status)}>{it.status || "—"}</Badge>
                   </TableCell>
-                  <TableCell>{it.email || "—"}</TableCell>
+                  <TableCell>{it.source || "—"}</TableCell>
                   <TableCell className="text-sm text-gray-500 dark:text-gray-400">
                     {it.createdAt ? new Date(it.createdAt).toLocaleString() : "—"}
                   </TableCell>
