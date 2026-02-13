@@ -118,11 +118,11 @@ export default function RequestServicesPage() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={5}>Loading...</TableCell>
+                <TableCell >Loading...</TableCell>
               </TableRow>
             ) : items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5}>Nema zahtjeva</TableCell>
+                <TableCell >Nema zahtjeva</TableCell>
               </TableRow>
             ) : (
               items.map((it) => (
