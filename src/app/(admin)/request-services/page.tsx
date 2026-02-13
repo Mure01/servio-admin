@@ -136,7 +136,6 @@ export default function RequestServicesPage() {
                   <TableCell>
                     <Badge color={statusColor(it.status)}>{it.status || "—"}</Badge>
                   </TableCell>
-                  <TableCell>{it.source || "—"}</TableCell>
                   <TableCell className="text-sm text-gray-500 dark:text-gray-400">
                     {it.createdAt ? new Date(it.createdAt).toLocaleString() : "—"}
                   </TableCell>
